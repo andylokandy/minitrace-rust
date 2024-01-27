@@ -45,15 +45,13 @@ fn rustracing_harness(n: usize) {
         }
     }
 
-    let (span_tx, span_rx) = crossbeam::channel::bounded(1000);
+    let (span_tx, _span_rx) = crossbeam::channel::bounded(1000);
 
     {
         let tracer = rustracing::Tracer::with_sender(rustracing::sampler::AllSampler, span_tx);
         let parent_span = tracer.span("parent").start_with_state(());
         dummy_rustracing(n, &parent_span);
     }
-
-    let _r = span_rx.iter().collect::<Vec<_>>();
 }
 
 fn minitrace_harness(n: usize) {
